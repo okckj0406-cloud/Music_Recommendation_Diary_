@@ -8,7 +8,6 @@ SITUATION_KEYWORDS = {
     "Achievement": [
         "성공", "합격", "해냈", "완료", "최고", "축하"
     ],
-    # 추가 상황 (매핑이 없으면 default로 추천됨)
     "Lonely": [
         "외로", "고독", "혼자", "쓸쓸"
     ],
@@ -35,69 +34,71 @@ SITUATION_KEYWORDS = {
     ],
 }
 
+
 MAPPING_DATA = {
     "Positive": {
         "default": [
-            "https://www.youtube.com",
-            "https://www.youtube.com"
+            "https://www.youtube.com/watch?v=fE2h3lGlOsk",
+            "https://www.youtube.com/watch?v=JGwWNGJdvx8"
         ],
         "Achievement": [
-            "https://www.youtube.com",
-            "https://www.youtube.com"
+            "https://www.youtube.com/watch?v=7C2z4GqqS5E",
+            "https://www.youtube.com/watch?v=KxJj8gD7jZg"
         ],
         "Motivation": [
-            "https://www.youtube.com",  
-            "https://www.youtube.com"   
+            "https://www.youtube.com/watch?v=ioNng23DkIM",
+            "https://www.youtube.com/watch?v=btPJPFnesV4"
         ]
     },
+
     "Negative": {
         "default": [
-            "https://www.youtube.com",
-            "https://www.youtube.com"
+            "https://www.youtube.com/watch?v=EaswWiwMVs8",
+            "https://www.youtube.com/watch?v=RBumgq5yVrA"
         ],
         "Breakup": [
-            "https://www.youtube.com/watch?v=42iMZrYDEM4&list=RD42iMZrYDEM4&start_radio=1"
-    
+            "https://www.youtube.com/watch?v=Il-an3K9pjg",
+            "https://www.youtube.com/watch?v=YQHsXMglC9A"
         ],
         "Stress": [
-            "https://www.youtube.com",
-            "https://www.youtube.com"
+            "https://www.youtube.com/watch?v=d9IxdwEFk1c",
+            "https://www.youtube.com/watch?v=hTWKbfoikeg"
         ],
         "Lonely": [
-            "https://www.youtube.com",  
-            "https://www.youtube.com"   
+            "https://www.youtube.com/watch?v=U7mPqycQ0tQ",
+            "https://www.youtube.com/watch?v=pXRviuL6vMY"
         ],
         "Anxiety": [
-            "https://www.youtube.com",  
-            "https://www.youtube.com"   
+            "https://www.youtube.com/watch?v=nM0xDI5R50E",
+            "https://www.youtube.com/watch?v=YykjpeuMNEk"
         ],
         "Anger": [
-            "https://www.youtube.com",  
-            "https://www.youtube.com"   
+            "https://www.youtube.com/watch?v=4Q46xYqUwZQ",
+            "https://www.youtube.com/watch?v=W0DM5lcj6mw"
         ],
         "Tired": [
-            "https://www.youtube.com",  
-            "https://www.youtube.com"   
+            "https://www.youtube.com/watch?v=K5KAc5CoCuk",
+            "https://www.youtube.com/watch?v=ktvTqknDobU"
         ]
     },
+
     "Neutral": {
         "default": [
-            "https://www.youtube.com",
-            "https://www.youtube.com"
+            "https://www.youtube.com/watch?v=3i4466b4UAs",
+            "https://www.youtube.youtube.com/watch?v=J---aiyznGQ"
         ],
         "Rain": [
-            "https://www.youtube.com",  
-            "https://www.youtube.com"   
+            "https://www.youtube.com/watch?v=D1PvIWdJ8xo",
+            "https://www.youtube.com/watch?v=VPRjCeoBqrI"
         ],
         "Focus": [
-            "https://www.youtube.com",  
-            "https://www.youtube.com"   
+            "https://www.youtube.com/watch?v=0-q1KafFCLU",
+            "https://www.youtube.com/watch?v=5qap5aO4i9A"
         ],
         "Nostalgia": [
-            "https://www.youtube.com",  
-            "https://www.youtube.com"   
+            "https://www.youtube.com/watch?v=8ZgpeZ5ZkLQ",
+            "https://www.youtube.com/watch?v=kXYiU_JCYtU"
         ]
     }
 }
-
-
+#데이터는 계속 추가 예정.

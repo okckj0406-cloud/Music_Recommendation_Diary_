@@ -190,6 +190,17 @@ function renderDiaryCarousel() {
                 </button>
                 <button class="recommend-btn" data-index="${idx}">음악 추천</button>
             </div>
+            
+            ${it.id !== 'new' && !String(it.id).startsWith('temp-') && !isNaN(parseInt(it.id)) ? `
+            <div class="comments-section" data-diary-id="${it.id}">
+                <h4 class="comments-title">💬 댓글</h4>
+                <div class="comments-list" id="comments-list-${it.id}"></div>
+                <div class="comment-form">
+                    <textarea class="comment-input" id="comment-input-${it.id}" placeholder="댓글을 입력하세요... (Enter: 작성, Shift+Enter: 줄바꿈)"></textarea>
+                    <button class="comment-submit-btn" data-diary-id="${it.id}">댓글 작성</button>
+                </div>
+            </div>
+            ` : ''}
         </div>
     `;
     
@@ -222,6 +233,28 @@ function renderDiaryCarousel() {
 
     document.querySelectorAll('.save-btn').forEach(btn => btn.onclick = handleSave);
     document.querySelectorAll('.recommend-btn').forEach(btn => btn.onclick = handleRecommend);
+    
+    // 댓글 기능 초기화
+    const diaryId = it.id !== 'new' && !String(it.id).startsWith('temp-') ? parseInt(it.id) : null;
+    if (diaryId && !isNaN(diaryId)) {
+        loadComments(diaryId);
+        const commentSubmitBtn = document.querySelector(`.comment-submit-btn[data-diary-id="${diaryId}"]`);
+        const commentInput = document.getElementById(`comment-input-${diaryId}`);
+        
+        if (commentSubmitBtn) {
+            commentSubmitBtn.onclick = () => handleCommentSubmit(diaryId);
+        }
+        
+        // Enter 키로 댓글 작성 (Shift+Enter는 줄바꿈)
+        if (commentInput) {
+            commentInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleCommentSubmit(diaryId);
+                }
+            });
+        }
+    }
     
     // 현재 일기의 음악 추천 결과 표시
     updateMusicPanel();
@@ -446,3 +479,110 @@ saveUserName.onclick = () => {
 })();
 
 window.addEventListener('resize', updateCarouselPosition);
+
+// 댓글 로드
+async function loadComments(diaryId) {
+    try {
+        const res = await fetch(`/comments?diary_id=${diaryId}`);
+        const { items = [] } = await res.json();
+        
+        const commentsList = document.getElementById(`comments-list-${diaryId}`);
+        if (!commentsList) return;
+        
+        if (items.length === 0) {
+            commentsList.innerHTML = '<p class="no-comments">아직 댓글이 없습니다.</p>';
+            return;
+        }
+        
+        commentsList.innerHTML = items.map(comment => {
+            const date = new Date(comment.created_at);
+            const dateStr = date.toLocaleDateString('ko-KR', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            return `
+                <div class="comment-item" data-comment-id="${comment.id}">
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    <div class="comment-footer">
+                        <span class="comment-date">${dateStr}</span>
+                        <button class="comment-delete-btn" data-comment-id="${comment.id}" title="댓글 삭제">🗑️</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // 삭제 버튼 이벤트 리스너
+        commentsList.querySelectorAll('.comment-delete-btn').forEach(btn => {
+            btn.onclick = async (e) => {
+                e.stopPropagation();
+                const commentId = btn.dataset.commentId;
+                if (!confirm('정말 이 댓글을 삭제하시겠습니까?')) {
+                    return;
+                }
+                
+                try {
+                    const res = await fetch('/comments', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: parseInt(commentId) })
+                    });
+                    
+                    if (!res.ok) throw new Error('서버 오류');
+                    
+                    await loadComments(diaryId);
+                    showMessage('댓글이 삭제되었습니다.');
+                } catch (e) {
+                    console.error(e);
+                    showMessage('댓글 삭제 실패!');
+                }
+            };
+        });
+        
+    } catch (e) {
+        console.error('댓글 로드 실패:', e);
+        const commentsList = document.getElementById(`comments-list-${diaryId}`);
+        if (commentsList) {
+            commentsList.innerHTML = '<p class="error-message">댓글을 불러오지 못했습니다.</p>';
+        }
+    }
+}
+
+// 댓글 작성
+async function handleCommentSubmit(diaryId) {
+    const input = document.getElementById(`comment-input-${diaryId}`);
+    if (!input) return;
+    
+    const content = input.value.trim();
+    if (!content) {
+        showMessage('댓글을 입력해주세요.');
+        return;
+    }
+    
+    try {
+        const res = await fetch('/comments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ diary_id: diaryId, content: content })
+        });
+        
+        if (!res.ok) throw new Error('서버 오류');
+        
+        input.value = '';
+        await loadComments(diaryId);
+        showMessage('댓글이 작성되었습니다.');
+    } catch (e) {
+        console.error(e);
+        showMessage('댓글 작성 실패!');
+    }
+}
+
+// HTML 이스케이프 함수
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
